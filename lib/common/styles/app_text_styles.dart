@@ -59,6 +59,12 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
   );
 
+  static const TextStyle h4b = TextStyle(
+    color: Colors.black,
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
   static const TextStyle h5 = TextStyle(
     fontSize: 14, // H5 size for app
     fontWeight: FontWeight.w500,
@@ -66,6 +72,7 @@ class AppTextStyles {
   static const TextStyle h5b = TextStyle(
     fontSize: 14, // H5 size for app
     fontWeight: FontWeight.bold,
+    color: Colors.black
   );
 
   static const TextStyle h6 = TextStyle(
@@ -132,8 +139,22 @@ class AppTextStyles {
   );
 
   // 11. Style for small text
+  static final TextStyle mediumText = baseStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w300,
+    color: _smallTextColor,
+  );
+
+  // 11. Style for small text
   static final TextStyle smallText = baseStyle(
     fontSize: 12,
+    fontWeight: FontWeight.w300,
+    color: _smallTextColor,
+  );
+
+  // 11. Style for small text
+  static final TextStyle smallerText = baseStyle(
+    fontSize: 8,
     fontWeight: FontWeight.w300,
     color: _smallTextColor,
   );

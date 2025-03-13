@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary colors
-  static const Color primaryColor = Color(0xFF007AFF); // Primary Color (e.g., app bar, buttons)
+  static const Color primaryColor = Color(0xFF000000); // Primary Color (e.g., app bar, buttons)
+  // static const Color primaryColor = Color(0xFF007AFF); // Primary Color (e.g., app bar, buttons)
   static const Color accentColor = Color(0xFFFFD700); // Accent Color (e.g., highlights, icons)
 
   // Text colors

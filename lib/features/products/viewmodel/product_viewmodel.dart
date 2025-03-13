@@ -1,5 +1,4 @@
 // File: product_viewmodel.dart
-// File: product_viewmodel.dart
 import 'package:flutter/foundation.dart';
 
 import '../model/product_model.dart';

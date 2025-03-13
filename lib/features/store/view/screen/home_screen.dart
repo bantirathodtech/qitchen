@@ -3,13 +3,17 @@
 import 'package:cw_food_ordering/features/store/model/store_models.dart';
 import 'package:cw_food_ordering/features/store/view/widgets/restaurant_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../../common/log/loggers.dart';
 import '../../../../../../common/styles/app_text_styles.dart';
+import '../../../../core/search_overlay/1/search_icon.dart';
 import '../../../auth/profile/profile_screen.dart';
 import '../../../home/error_display.dart';
 import '../../../home/loading_indicator.dart';
+import '../../../home/location_selection_screen.dart';
+import '../../../home/widgets/restaurant_list.dart';
 import '../../../products/view/product_screen.dart';
 import '../../../search/search_bar_section.dart';
 import '../../provider/store_provider.dart';
@@ -40,6 +44,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _searchQuery = ''; // Add this to track search query
+  String currentLocation = "Chennai, AMB 6";
 
   @override
   void initState() {
@@ -167,22 +172,41 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildWelcomeSection(),
             const SizedBox(height: 16),
             FoodCourtBanner(
-              name: viewModel.storeData?.name ?? 'Food Court',
+              // name: viewModel.storeData?.name ?? 'Food Court',
+              name: currentLocation,
+
               onTap: () => _handleFoodCourtTap(context),
+              onLocationSelect: () async {
+                // Open location selection screen
+                // In your home screen where you handle the result
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LocationSelectionScreen(),
+                  ),
+                );
+
+                // Update location if result is not null
+                if (result != null && result is Map<String, dynamic>) {  // Change to dynamic instead of String?
+                  setState(() {
+                    currentLocation = "${result['city']}, ${result['area']}";
+                  });
+                }
+              },
             ),
-            const SizedBox(height: 8),
-            const OrderStatusCard(),
-            const SizedBox(height: 8),
-            if (viewModel.storeData?.promotionBanner?.isNotEmpty ?? false) ...[
-              PromotionBanner(
-                bannerUrl: viewModel.storeData?.promotionBanner ?? '',
-                onTap: () => _handlePromotionTap(context),
-              ),
-              const SizedBox(height: 8),
-            ],
-            SearchBarSection(
-              onSearch: (query) => setState(() => _searchQuery = query),
-            ),
+            const SizedBox(height: 16),
+            // const OrderStatusCard(),
+            // const SizedBox(height: 16),
+            // if (viewModel.storeData?.promotionBanner?.isNotEmpty ?? false) ...[
+            //   PromotionBanner(
+            //     bannerUrl: viewModel.storeData?.promotionBanner ?? '',
+            //     onTap: () => _handlePromotionTap(context),
+            //   ),
+            //   const SizedBox(height: 8),
+            // ],
+            // SearchBarSection(
+            //   onSearch: (query) => setState(() => _searchQuery = query),
+            // ),
             const SizedBox(height: 16),
             Text(
               'Restaurants',
@@ -200,31 +224,89 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Widget _buildWelcomeSection() {
+  //   return Consumer<StoreProvider>(
+  //     builder: (context, storeProvider, child) {
+  //       final userName = storeProvider.userName;
+  //       return Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               if (userName != null) ...[
+  //                 Text(
+  //                   'Hello, $userName',
+  //                   style: AppTextStyles.h2,
+  //                 ),
+  //                 const SizedBox(height: 4),
+  //               ],
+  //               Text(
+  //                 'What would you like to eat?',
+  //                 style: AppTextStyles.h4,
+  //               ),
+  //             ],
+  //           ),
+  //           Row(
+  //             children: [
+  //               const SearchIcon(),
+  //               const SizedBox(width: 8),
+  //               GestureDetector(
+  //                 onTap: () {
+  //                   _navigateToScreen(context, const ProfileScreen());
+  //                 },
+  //
+  //                 child: Container(
+  //                   width: 30, // Set the desired width
+  //                   height: 30, // Set the desired height
+  //                   margin: const EdgeInsets.only(
+  //                       right: 12), // Optional: Add margin if needed
+  //                   // child: Image.asset('assets/images/ic_user.png', // Your image path
+  //                   child: Image.asset(
+  //                     'assets/images/user_avatar.png', // Your image path
+  //
+  //                     fit: BoxFit
+  //                         .cover, // This ensures the image fills the container
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           )
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _buildWelcomeSection() {
     return Consumer<StoreProvider>(
       builder: (context, storeProvider, child) {
         final userName = storeProvider.userName;
+        final displayName = (userName == null || userName.trim().isEmpty)
+            ? 'User'
+            : userName;
+
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (userName != null) ...[
-                  Text(
-                    'Hello, $userName',
-                    style: AppTextStyles.h2,
-                  ),
-                  const SizedBox(height: 4),
-                ],
+                Text(
+                  'Hello, $displayName',
+                  style: AppTextStyles.h3,
+                ),
+                const SizedBox(height: 4),
                 Text(
                   'What would you like to eat?',
-                  style: AppTextStyles.h4,
+                  style: AppTextStyles.h5,
                 ),
               ],
             ),
-            Column(
+            Row(
               children: [
+                const SearchIcon(),
+                const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () {
                     _navigateToScreen(context, const ProfileScreen());
@@ -232,14 +314,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     width: 30, // Set the desired width
                     height: 30, // Set the desired height
-                    margin: const EdgeInsets.only(
-                        right: 12), // Optional: Add margin if needed
-                    // child: Image.asset('assets/images/ic_user.png', // Your image path
+                    margin: const EdgeInsets.only(right: 12),
                     child: Image.asset(
                       'assets/images/user_avatar.png', // Your image path
-
-                      fit: BoxFit
-                          .cover, // This ensures the image fills the container
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -250,6 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+
 
   void _navigateToScreen(BuildContext context, Widget screen) {
     Navigator.push(
@@ -314,35 +393,3 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// File: screens/home/widgets/restaurant_list.dart
-class RestaurantList extends StatelessWidget {
-  static const String TAG = '[RestaurantList]';
-
-  final List<RestaurantModel> restaurants;
-  final ValueChanged<RestaurantModel> onRestaurantSelected;
-
-  const RestaurantList({
-    super.key,
-    required this.restaurants,
-    required this.onRestaurantSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    AppLogger.logDebug(
-        '$TAG: Building list with ${restaurants.length} restaurants');
-
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: restaurants.length,
-      itemBuilder: (context, index) {
-        final restaurant = restaurants[index];
-        return RestaurantCard(
-          restaurant: restaurant,
-          onTap: () => onRestaurantSelected(restaurant),
-        );
-      },
-    );
-  }
-}

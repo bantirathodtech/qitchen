@@ -59,6 +59,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icons/
     - assets/images/svg/payment/payment_credit.svg
     - assets/images/svg/payment/payment_google.svg
     - assets/images/svg/payment/payment_paypal.svg

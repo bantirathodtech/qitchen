@@ -179,12 +179,33 @@ class TimingModel {
     required this.days,
   });
 
+  // factory TimingModel.fromJson(Map<String, dynamic> json) {
+  //   AppLogger.logDebug('$TAG: Parsing timing data');
+  //
+  //   return TimingModel(
+  //     startTime: json['startTime'] ?? '',
+  //     endTime: json['endTime'] ?? '',
+  //     days: {
+  //       'monday': json['isMonday'] == 'Y',
+  //       'tuesday': json['isTuesday'] == 'Y',
+  //       'wednesday': json['isWednesday'] == 'Y',
+  //       'thursday': json['isThursday'] == 'Y',
+  //       'friday': json['isFriday'] == 'Y',
+  //       'saturday': json['isSaturday'] == 'Y',
+  //       'sunday': json['isSunday'] == 'Y',
+  //     },
+  //   );
+  // }
   factory TimingModel.fromJson(Map<String, dynamic> json) {
     AppLogger.logDebug('$TAG: Parsing timing data');
 
+    // Ensure we have non-null values to work with
+    final startTime = json['startTime'] ?? '';
+    final endTime = json['endTime'] ?? '';
+
     return TimingModel(
-      startTime: json['startTime'] ?? '',
-      endTime: json['endTime'] ?? '',
+      startTime: startTime,
+      endTime: endTime,
       days: {
         'monday': json['isMonday'] == 'Y',
         'tuesday': json['isTuesday'] == 'Y',

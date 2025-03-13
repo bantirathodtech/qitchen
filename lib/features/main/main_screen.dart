@@ -71,9 +71,11 @@ class MainScreenState extends State<MainScreen> {
         bottomNavigationBar: Consumer<CartManager>(
           builder: (context, cartManager, child) {
             return BottomNavigationBar(
+              backgroundColor: Colors.white,
               currentIndex: _selectedIndex,
               onTap: onItemTapped,
-              selectedItemColor: Theme.of(context).primaryColor,
+              // selectedItemColor: Theme.of(context).primaryColor,
+              selectedItemColor: Colors.black,
               unselectedItemColor: Colors.grey,
               items: [
                 const BottomNavigationBarItem(
@@ -96,6 +98,49 @@ class MainScreenState extends State<MainScreen> {
             );
           },
         ),
+        //New
+        // bottomNavigationBar: Consumer<CartManager>(
+        //   builder: (context, cartManager, child) {
+        //     return BottomNavigationBar(
+        //       backgroundColor: Colors.white,  // White background
+        //       elevation: 8,  // Slight shadow
+        //       type: BottomNavigationBarType.fixed,  // Ensures proper spacing
+        //       selectedFontSize: 14,  // Slightly bigger text
+        //       unselectedFontSize: 12,
+        //       iconSize: 28,  // Bigger icons for better tap experience
+        //       currentIndex: _selectedIndex,
+        //       onTap: onItemTapped,
+        //       selectedItemColor: Colors.black,
+        //       unselectedItemColor: Colors.grey.shade600,
+        //       showSelectedLabels: true,
+        //       showUnselectedLabels: false,  // Cleaner UI
+        //       items: [
+        //         const BottomNavigationBarItem(
+        //           icon: Icon(Icons.home),
+        //           label: 'Home',
+        //         ),
+        //         BottomNavigationBarItem(
+        //           icon: Badge(
+        //             alignment: Alignment.topRight,
+        //             isLabelVisible: cartManager.itemCount > 0,
+        //             backgroundColor: Colors.red,  // More noticeable badge
+        //             label: Text(
+        //               '${cartManager.itemCount}',
+        //               style: const TextStyle(color: Colors.white, fontSize: 12),
+        //             ),
+        //             child: const Icon(Icons.shopping_cart),
+        //           ),
+        //           label: 'Cart',
+        //         ),
+        //         const BottomNavigationBarItem(
+        //           icon: Icon(Icons.menu),
+        //           label: 'Menu',
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // ),
+
       ),
     );
   }
