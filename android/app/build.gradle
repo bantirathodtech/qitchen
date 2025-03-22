@@ -1,0 +1,80 @@
+// Step 1: Define plugins required for Android build
+plugins {
+    id "com.android.application" // Enables Android app building
+    id "kotlin-android" // Supports Kotlin in the Android part
+    id "dev.flutter.flutter-gradle-plugin" // Integrates Flutter with Gradle
+    id "com.google.gms.google-services" // Adds Google Services (e.g., Firebase) support
+}
+
+// Step 2: Load keystore properties for signing the release APK
+// Why: Android requires APKs to be signed; this reads the signing details from key.properties
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    // Step 3: Set the app's unique namespace (used in AndroidManifest.xml)
+    namespace = "com.cwsuite.food.ordering"
+
+    // Step 4: Use Flutter’s default SDK versions for compatibility
+    compileSdk = flutter.compileSdkVersion // Defines the Android API level to compile against
+    ndkVersion = flutter.ndkVersion // Specifies the NDK version for native code
+
+    // Step 5: Configure Java compatibility (Flutter uses Java/Kotlin under the hood)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17 // Java 17 source compatibility
+        targetCompatibility = JavaVersion.VERSION_17 // Java 17 bytecode target
+    }
+
+    // Step 6: Configure Kotlin JVM target (for Kotlin code in Android)
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17 // Ensures Kotlin compiles to Java 17 bytecode
+    }
+
+    // Step 7: Define signing configuration for the release build
+    // Why: Release APKs must be signed with a keystore for distribution
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias'] // Alias from key.properties
+            keyPassword keystoreProperties['keyPassword'] // Key password from key.properties
+            storeFile file(keystoreProperties['storeFile']) // Path to my-release-key.jks
+            storePassword keystoreProperties['storePassword'] // Store password from key.properties
+        }
+    }
+
+    // Step 8: Set default app configuration
+    defaultConfig {
+        applicationId = "com.cwsuite.food.ordering" // Unique ID for the app (used in Play Store)
+        minSdkVersion Math.max(flutter.minSdkVersion, 23) // Minimum Android version (API 23 = Android 6.0)
+        targetSdk = flutter.targetSdkVersion // Target Android version (usually latest stable)
+        versionCode = flutter.versionCode // App version code (integer, e.g., 1)
+        versionName = flutter.versionName // App version name (string, e.g., "1.0.0")
+    }
+
+    // Step 9: Configure build types (debug and release)
+    buildTypes {
+        release {
+            // Why: This block defines settings for the release build
+            signingConfig signingConfigs.release // Use the signing config defined above
+            shrinkResources true // Remove unused resources to reduce APK size
+            minifyEnabled true // Enable code minification for smaller APK
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro' // Apply ProGuard rules
+        }
+        // Note: Debug build type is implicitly defined by Flutter with default settings
+    }
+}
+
+// Step 10: Define Android-specific dependencies
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1' // AppCompat library for compatibility
+    implementation 'com.google.android.material:material:1.9.0' // Material Design components
+    implementation platform('com.google.firebase:firebase-bom:33.5.1') // Add Firebase BOM
+    implementation 'com.google.firebase:firebase-common-ktx'
+}
+
+// Step 11: Link Flutter source code
+flutter {
+    source = "../.." // Points to the Flutter project root (where lib/ is)
+}

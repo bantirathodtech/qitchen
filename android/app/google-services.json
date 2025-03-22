@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "910425365277",
+    "project_id": "cw-food-ordering",
+    "storage_bucket": "cw-food-ordering.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910425365277:android:968761a03dbfb8f46b9ff4",
+        "android_client_info": {
+          "package_name": "com.cwsuite.food.ordering"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvpsZ8Dsi7n67Gr77wdfS_s7XJD1ljGS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

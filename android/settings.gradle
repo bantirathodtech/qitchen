@@ -1,0 +1,32 @@
+// Step 1: Define plugin management
+pluginManagement {
+    // Dynamically get Flutter SDK path from local.properties
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }()
+
+    // Include Flutter’s Gradle tools
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    // Step 2: Specify repositories for plugins
+    repositories {
+        google() // Google’s Maven repository
+        mavenCentral() // Central Maven repository
+        gradlePluginPortal() // Gradle plugin portal
+    }
+}
+
+// Step 3: Define plugins with versions (applied later)
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0" // Loads Flutter plugins
+    id "com.android.application" version "8.1.0" apply false // Android app plugin
+    id "com.google.gms.google-services" version "4.3.15" apply false // Google Services plugin
+    id "org.jetbrains.kotlin.android" version "1.8.22" apply false // Kotlin plugin
+}
+
+// Step 4: Include the app module
+include ":app"

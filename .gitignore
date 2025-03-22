@@ -1,0 +1,208 @@
+#############################################################
+# SECTION 1: GENERAL & SYSTEM FILES
+#############################################################
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.tmp
+*.temp
+tmp/
+logs/
+*.log
+*.log.*
+
+#############################################################
+# SECTION 2: IDE & EDITOR FILES
+#############################################################
+# IntelliJ/Android Studio/VS Code
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.vs/
+*.vcxproj.user
+*.vcxproj.filters
+.project
+.classpath
+.settings/
+
+#############################################################
+# SECTION 3: DART & FLUTTER CORE
+#############################################################
+# Dart/Flutter cache and build
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+pubspec.lock
+**/doc/api/
+flutter_*.png
+linked_*.ds
+unlinked.ds
+unlinked_spec.ds
+flutter_export_environment.sh
+
+# Generated Dart files
+**/*.g.dart
+**/*.freezed.dart
+**/*.mocks.dart
+**/generated_plugin_registrant.*
+**/GeneratedPluginRegistrant.*
+lib/generated_plugin_registrant.dart
+
+#############################################################
+# SECTION 4: BUILD OUTPUTS (ALL PLATFORMS)
+#############################################################
+# Main build directories
+/build/
+**/build/
+
+# Binary and large build files
+**/*.dill
+**/*.so
+**/*.so.*
+**/*.dylib
+**/*.dll
+**/*.jar
+**/*.aar
+**/*.framework/
+**/*.a
+**/*.apk
+**/*.aab
+**/*.ipa
+**/*.app
+**/*.exe
+**/kernel_blob.bin
+**/isolate_snapshot_data
+**/vm_snapshot_data
+**/app.dill
+**/app.so
+**/classes*.dex
+
+#############################################################
+# SECTION 5: ANDROID SPECIFIC
+#############################################################
+# Android configuration and cache
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/key.properties
+**/android/**/*.keystore
+**/android/**/*.jks
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/app/.cxx/
+
+# Android build outputs
+**/android/app/build/
+**/android/app/intermediates/**
+**/intermediates/assets/**
+**/intermediates/merged_assets/**
+**/intermediates/flutter/**
+**/intermediates/compressed_assets/**
+**/intermediates/dex/**
+**/intermediates/merged_native_libs/**
+**/intermediates/merged_jni_libs/**
+**/intermediates/incremental/**
+**/intermediates/signing_config/**
+**/intermediates/packaged_manifests/**
+**/intermediates/merged-not-compiled-resources/**
+**/intermediates/stripped_native_libs/**
+**/intermediates/merged_shaders/**
+
+#############################################################
+# SECTION 6: iOS/MACOS SPECIFIC
+#############################################################
+# iOS configuration
+**/ios/Flutter/.last_build_id
+**/ios/**/*sync/
+**/ios/**/.sconsign.dblite
+**/ios/**/.tags*
+**/ios/**/.vagrant/
+**/ios/**/DerivedData/
+**/ios/**/Icon?
+**/ios/**/Pods/
+**/ios/**/.symlinks/
+**/ios/**/profile
+**/ios/**/xcuserdata
+**/ios/.generated/
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+
+# iOS build outputs
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/build/
+**/ios/**/*.ipa
+
+# macOS configuration and build
+**/macos/Flutter/ephemeral
+**/macos/Flutter/GeneratedPluginRegistrant.*
+**/macos/Flutter/Flutter-*.xcconfig
+**/macos/Pods/
+**/macos/**/*.mode1v3
+**/macos/**/*.mode2v3
+**/macos/**/*.moved-aside
+**/macos/**/*.pbxuser
+**/macos/**/*.perspectivev3
+**/macos/**/*sync/
+**/macos/**/DerivedData/
+**/macos/**/Icon?
+**/macos/**/.symlinks/
+**/macos/**/profile
+**/macos/**/xcuserdata
+**/macos/build/
+**/macos/Runner.app
+**/macos/*.app
+**/macos/*.pkg
+
+#############################################################
+# SECTION 7: WINDOWS & LINUX SPECIFIC
+#############################################################
+# Windows
+**/windows/flutter/ephemeral/
+**/windows/flutter/generated_plugin_registrant.*
+**/windows/flutter/generated_plugins.cmake
+**/windows/out/
+**/windows/x64/
+**/windows/x86/
+**/windows/.vs/
+**/windows/Release/
+**/windows/Debug/
+
+# Linux
+**/linux/flutter/ephemeral/
+**/linux/flutter/generated_plugin_registrant.*
+**/linux/flutter/generated_plugins.cmake
+**/linux/build/
+
+#############################################################
+# SECTION 8: WEB SPECIFIC
+#############################################################
+**/web/packages/
+**/web/flutter_service_worker.js
+# Note: Do NOT ignore web/favicon.png or other web assets
