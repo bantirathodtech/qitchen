@@ -32,6 +32,26 @@ class VerifyRepository {
       );
     }
   }
+
+  // Add this method to VerifyRepository
+  Future<CustomerModel> refreshUserProfile(String phoneNumber) async {
+    try {
+      AppLogger.logInfo('[VerifyRepository] Refreshing user profile with phone: $phoneNumber');
+
+      // Call service to verify customer and get updated profile
+      final updatedCustomer = await _verifyService.verifyCustomer(phoneNumber);
+
+      // Update the local storage with the latest data
+      if (updatedCustomer.walletId != null) {
+        AppLogger.logInfo('[VerifyRepository] Updated wallet ID: ${updatedCustomer.walletId}');
+      }
+
+      return updatedCustomer;
+    } catch (e) {
+      AppLogger.logError('[VerifyRepository] Error refreshing profile: $e');
+      rethrow;
+    }
+  }
 }
 
 // import 'package:cw_food_ordering/common/log/loggers.dart';

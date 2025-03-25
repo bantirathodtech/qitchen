@@ -1,6 +1,6 @@
 import '../../../../common/log/loggers.dart';
-import '../../../../core/api/api_constants.dart';
-import '../ache/product_cache.dart';
+import '../../../core/services/constants/api_constants.dart';
+import '../cache/product_cache.dart';
 import '../model/product_model.dart';
 import '../service/product_service_redis.dart';
 

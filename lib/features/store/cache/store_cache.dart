@@ -12,6 +12,10 @@ class StoreCache {
   static const String STORE_DATA_KEY = 'cached_store_data';
   static const String CACHE_TIMESTAMP_KEY = 'store_cache_timestamp';
 
+  // Increase cache duration to 24 hours (24 * 60 * 60 * 1000 ms)
+  // static const int CACHE_DURATION_MS = 86400000;
+  static const int CACHE_DURATION_MS = 3600000; //1hr
+
   /// Save store data to cache
   static Future<bool> saveStoreData(StoreModel storeData) async {
     try {
@@ -23,7 +27,9 @@ class StoreCache {
 
       // Save data and timestamp
       await prefs.setString(STORE_DATA_KEY, jsonData);
-      await prefs.setInt(CACHE_TIMESTAMP_KEY, DateTime.now().millisecondsSinceEpoch);
+      await prefs.setInt(CACHE_TIMESTAMP_KEY, DateTime
+          .now()
+          .millisecondsSinceEpoch);
 
       AppLogger.logInfo('$TAG: Store data cached successfully');
       return true;
@@ -47,7 +53,9 @@ class StoreCache {
 
       // Check if cache is expired (24 hours)
       final timestamp = prefs.getInt(CACHE_TIMESTAMP_KEY) ?? 0;
-      final now = DateTime.now().millisecondsSinceEpoch;
+      final now = DateTime
+          .now()
+          .millisecondsSinceEpoch;
       final cacheDuration = now - timestamp;
 
       // // Cache expiration: 24 hours (24 * 60 * 60 * 1000 ms)
@@ -57,7 +65,7 @@ class StoreCache {
       // }
 
       // Cache expiration: 1 hours (1 * 60 * 60 * 1000 ms)
-      if (cacheDuration > 3600000) {
+      if (cacheDuration > CACHE_DURATION_MS) {
         AppLogger.logInfo('$TAG: Cached store data is expired');
         return null;
       }
@@ -66,9 +74,16 @@ class StoreCache {
       final jsonData = prefs.getString(STORE_DATA_KEY);
       if (jsonData == null) return null;
 
-      final storeData = StoreModel.fromJson(json.decode(jsonData));
-      AppLogger.logInfo('$TAG: Successfully retrieved cached store data');
-      return storeData;
+      try {
+        final storeData = StoreModel.fromJson(json.decode(jsonData));
+        AppLogger.logInfo('$TAG: Successfully retrieved cached store data');
+        return storeData;
+      } catch (e) {
+        // If parsing fails, invalidate the cache
+        AppLogger.logError('$TAG: Error parsing cached data: $e');
+        await clearCache();
+        return null;
+      }
     } catch (e) {
       AppLogger.logError('$TAG: Error retrieving cached store data: $e');
       return null;
@@ -87,4 +102,30 @@ class StoreCache {
       AppLogger.logError('$TAG: Error clearing store data cache: $e');
     }
   }
-}
+
+    /// Check if the cache is valid without loading full data
+    /// Used for quick validation checks
+    static Future<bool> isCacheValid() async {
+      try {
+        final prefs = await SharedPreferences.getInstance();
+
+        // Check if cache exists
+        if (!prefs.containsKey(STORE_DATA_KEY) ||
+            !prefs.containsKey(CACHE_TIMESTAMP_KEY)) {
+          return false;
+        }
+
+        // Check timestamp
+        final timestamp = prefs.getInt(CACHE_TIMESTAMP_KEY) ?? 0;
+        final now = DateTime
+            .now()
+            .millisecondsSinceEpoch;
+        final cacheDuration = now - timestamp;
+
+        return cacheDuration <= CACHE_DURATION_MS;
+      } catch (e) {
+        AppLogger.logError('$TAG: Error checking cache validity: $e');
+        return false;
+      }
+    }
+  }

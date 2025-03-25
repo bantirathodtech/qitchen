@@ -172,7 +172,7 @@
 //         if (!mounted) return;
 //         ScaffoldMessenger.of(context).showSnackBar(
 //           const SnackBar(
-//             content: Text('Please login again to view order history'),
+//             content: Text('Please login again to view order_shared_common history'),
 //             backgroundColor: Colors.red,
 //           ),
 //         );
@@ -190,7 +190,7 @@
 //         ),
 //       );
 //     } catch (e) {
-//       AppLogger.logError('Error navigating to order history: $e');
+//       AppLogger.logError('Error navigating to order_shared_common history: $e');
 //
 //       if (!mounted) return;
 //       ScaffoldMessenger.of(context).showSnackBar(
@@ -269,7 +269,10 @@
 //     );
 //   }
 // }
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/log/loggers.dart';
 import '../../../common/styles/app_text_styles.dart';
@@ -278,7 +281,9 @@ import '../../common/widgets/custom_app_bar.dart';
 import '../auth/profile/profile_screen.dart';
 import '../auth/signin/signin_screen.dart';
 import '../favorite/favorite_view.dart';
-import '../history/view/order_history_screen.dart';
+import '../history/order_history/view/order_history_screen.dart';
+import '../history/order_history/viewmodel/order_history_viewmodel.dart';
+import '../history/wallet_history/viewmodel/wallet_history_viewmodel.dart';
 import '../main/main_screen.dart';
 import '../ordering/wallet/view/wallet_view.dart';
 
@@ -515,7 +520,7 @@ class MenuScreenState extends State<MenuScreen> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Please login again to view order history'),
+            content: Text('Please login again to view order_shared_common history'),
             backgroundColor: Colors.red,
           ),
         );
@@ -524,6 +529,17 @@ class MenuScreenState extends State<MenuScreen> {
 
       if (!mounted) return;
 
+      // Get view models and start prefetching in background
+      final walletHistoryViewModel = Provider.of<WalletHistoryViewModel>(context, listen: false);
+      final orderHistoryViewModel = Provider.of<OrderHistoryViewModel>(context, listen: false);
+
+      // Trigger both prefetches but don't await them (let them run in background)
+      unawaited(walletHistoryViewModel.prefetchWalletHistory());
+      unawaited(orderHistoryViewModel.prefetchOrderHistory());
+
+      AppLogger.logInfo('MenuScreen: Started background prefetch for order_shared_common and wallet history');
+
+      // Navigate immediately without waiting for prefetch to complete
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -533,7 +549,7 @@ class MenuScreenState extends State<MenuScreen> {
         ),
       );
     } catch (e) {
-      AppLogger.logError('Error navigating to order history: $e');
+      AppLogger.logError('Error navigating to order_shared_common history: $e');
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

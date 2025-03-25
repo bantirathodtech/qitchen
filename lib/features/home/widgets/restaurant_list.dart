@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../common/log/loggers.dart';
 import '../../store/model/store_models.dart';
 import '../../store/view/widgets/restaurant_card.dart';
-// File: screens/home/widgets/restaurant_list.dart
 
 class RestaurantList extends StatelessWidget {
   static const String TAG = '[RestaurantList]';
@@ -17,34 +16,31 @@ class RestaurantList extends StatelessWidget {
     required this.onRestaurantSelected,
   });
 
-//   @override
-//   Widget build(BuildContext context) {
-//     AppLogger.logDebug(
-//         '$TAG: Building list with ${restaurants.length} restaurants');
-//
-//     return ListView.builder(
-//       shrinkWrap: true,
-//       physics: const NeverScrollableScrollPhysics(),
-//       itemCount: restaurants.length,
-//       itemBuilder: (context, index) {
-//         final restaurant = restaurants[index];
-//         return RestaurantCard(
-//           restaurant: restaurant,
-//           onTap: () => onRestaurantSelected(restaurant),
-//         );
-//       },
-//     );
-//   }
-// }
   @override
   Widget build(BuildContext context) {
     AppLogger.logDebug(
         '$TAG: Building list with ${restaurants.length} restaurants');
 
+    // Add a check for empty restaurants list
+    if (restaurants.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 20.0),
+          child: Text(
+            'No restaurants available',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: restaurants.length * 2 - 1, // Adjust count to insert dividers
+      itemCount: restaurants.length * 2 - 1, // This is safe now that we check for empty list
       itemBuilder: (context, index) {
         if (index.isOdd) {
           // Add a thin, dark grey divider between restaurant cards
@@ -54,7 +50,6 @@ class RestaurantList extends StatelessWidget {
               color: Colors.grey[500], // Darker grey color
               thickness: 0.1, // Thin line
               height: 1, // Minimal height
-
             ),
           );
         } else {
@@ -69,6 +64,7 @@ class RestaurantList extends StatelessWidget {
     );
   }
 }
+
 //
 //   @override
 //   Widget build(BuildContext context) {

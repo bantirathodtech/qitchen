@@ -3,9 +3,9 @@
 import 'package:cw_food_ordering/features/store/model/store_models.dart';
 
 import '../../../../../common/log/loggers.dart';
-import '../../../../core/api/api_base_service.dart';
-import '../../../../core/api/api_constants.dart';
-import '../../../../core/api/api_url_manager.dart';
+import '../../../core/services/base/api_base_service.dart';
+import '../../../core/services/constants/api_constants.dart';
+import '../../../core/services/endpoints/api_url_manager.dart';
 
 /// Service responsible for handling all store-related API calls
 class StoreService {

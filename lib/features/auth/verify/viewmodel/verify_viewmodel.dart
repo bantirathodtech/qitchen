@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../../../common/log/loggers.dart';
+import '../../../../data/db/app_preferences.dart';
 import '../model/verify_model.dart';
 import '../repository/verify_repository.dart';
 
@@ -54,6 +55,31 @@ class VerifyViewModel extends ChangeNotifier {
           _error = null;
         }
       }
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  // Add this method to VerifyViewModel
+  Future<void> refreshUserProfile(String phoneNumber) async {
+    try {
+      _isLoading = true;
+      _error = null;
+      notifyListeners();
+
+      AppLogger.logInfo('[VerifyViewModel] Refreshing user profile');
+
+      // Get updated profile from repository
+      _customerData = await _verifyRepository.refreshUserProfile(phoneNumber);
+
+      // Save the updated data to local storage
+      await AppPreference.saveUserData(_customerData!.toJson());
+
+      AppLogger.logInfo('[VerifyViewModel] User profile refreshed successfully');
+    } catch (e) {
+      AppLogger.logError('[VerifyViewModel] Error refreshing profile: $e');
+      _error = e.toString();
     } finally {
       _isLoading = false;
       notifyListeners();

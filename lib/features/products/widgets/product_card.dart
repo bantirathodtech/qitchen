@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/log/loggers.dart';
 import '../../../../common/styles/app_text_styles.dart';
+import '../../cart/models/cart_item.dart';
+import '../../cart/multiple/cart_manager.dart';
 import '../../favorite/favorite_manager.dart';
-import '../../home/cart/multiple/cart_manager.dart';
-import '../../home/cart/models/cart_item.dart';
 import '../model/product_model.dart';
 
 class ProductCard extends StatelessWidget {
@@ -182,7 +182,7 @@ class ProductCard extends StatelessWidget {
         child: Icon(
           Icons.circle,
           size: 8,
-          color: isVeg ? Colors.black : Colors.black54,
+          color: isVeg ? Colors.green : Colors.red,
         ),
       ),
     );
@@ -201,7 +201,7 @@ class ProductCard extends StatelessWidget {
           ),
           child: Icon(
             product.isFavorite ?? false ? Icons.favorite : Icons.favorite_border,
-            color: product.isFavorite ?? false ? Colors.black : Colors.black54,
+            color: product.isFavorite ?? false ? Colors.red : Colors.grey,
             size: 20,
           ),
         ),

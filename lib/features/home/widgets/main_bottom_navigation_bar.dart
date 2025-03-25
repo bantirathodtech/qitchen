@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../cart/multiple/cart_manager.dart';
+
+import '../../cart/multiple/cart_manager.dart';
 
 /// Main bottom navigation bar with tab highlighting support
 /// Used in the main screen where tabs should be highlighted

@@ -8,6 +8,7 @@ import '../../../../../../common/log/loggers.dart';
 import '../../../../../../common/styles/app_text_styles.dart';
 import '../../../../core/network/network_helper.dart';
 import '../../../../core/search_overlay/1/search_icon.dart';
+import '../../../../data/cache/app_prefetch_manager.dart';
 import '../../../../data/db/app_preferences.dart';
 import '../../../auth/profile/profile_screen.dart';
 import '../../../home/error_display.dart';
@@ -40,11 +41,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _searchQuery = ''; // Add this to track search query
+  String _searchQuery = '';
   String currentLocation = "Chennai, AMB 6";
-  bool _isRetrying = false; // Added to track retry state
+  bool _isInitializing = true; // New flag to track initial loading state
 
-  // Add these variables
+  // Location state variables
   String? selectedCity;
   String? selectedArea;
 
@@ -52,9 +53,33 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     AppLogger.logInfo('${HomeScreen.TAG}: Initializing HomeScreen');
-    _initializeData();
-    _loadSavedLocation(); // Load saved location
 
+    // Set initial loading flag
+    setState(() => _isInitializing = true);
+
+    // Load data & location in parallel
+    _loadInitialData();
+
+    // Trigger prefetch in background after initial render
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AppPrefetchManager.prefetchAppData(context);
+    });
+  }
+
+  // Combined loading method to handle all initial data needs
+  Future<void> _loadInitialData() async {
+    try {
+      // Load both location and store data in parallel
+      await Future.wait([
+        _loadSavedLocation(),
+        _initializeData(),
+      ]);
+    } finally {
+      // Always mark initialization as complete regardless of outcome
+      if (mounted) {
+        setState(() => _isInitializing = false);
+      }
+    }
   }
 
   Future<void> _loadSavedLocation() async {
@@ -69,49 +94,50 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // // Initialize store data
-  // Future<void> _initializeData() async {
-  //   try {
-  //     AppLogger.logInfo('${HomeScreen.TAG}: Loading initial store data');
-  //     await context.read<HomeViewModel>().fetchStores();
-  //   } catch (e) {
-  //     AppLogger.logError('${HomeScreen.TAG}: Error loading initial data: $e');
-  //   }
-  // }
-
-  // Initialize store data with improved error handling
+  // Improved data initialization with better error handling
   Future<void> _initializeData() async {
+    // Safety check: don't proceed if widget is disposed
     if (!mounted) return;
 
     try {
-      setState(() => _isRetrying = true);
       AppLogger.logInfo('${HomeScreen.TAG}: Loading initial store data');
 
-      // Check connectivity first
+      // Get viewModel instance
+      final viewModel = context.read<HomeViewModel>();
+
+      // Reset any previous error state
+      viewModel.clearError();
+
+      // Check if data is already cached in the viewModel
+      if (viewModel.storeData != null) {
+        AppLogger.logInfo('${HomeScreen.TAG}: Using already loaded store data');
+        return; // Skip API call if we already have data
+      }
+
+      // Check device connectivity before making network requests
       final isConnected = await NetworkHelper.isConnected();
       if (!isConnected) {
         throw Exception('No internet connection. Please check your network settings.');
       }
 
-      // Add timeout to prevent infinite loading
-      await context.read<HomeViewModel>().fetchStores().timeout(
+      // Fetch data with timeout protection
+      await viewModel.fetchStores().timeout(
         const Duration(seconds: 15),
         onTimeout: () {
           AppLogger.logError('${HomeScreen.TAG}: Store data fetch timed out');
           throw Exception('Connection timed out. Please check your internet connection.');
         },
       );
+
+      AppLogger.logInfo('${HomeScreen.TAG}: Store data loaded successfully');
     } catch (e) {
+      // Error handling - log and update UI with error message
       AppLogger.logError('${HomeScreen.TAG}: Error loading initial data: $e');
-      // Make sure we're still mounted before updating state
+
+      // Only update UI if widget is still mounted
       if (mounted) {
-        // Ensure the ViewModel knows about the error for UI updates
+        // Pass error to ViewModel so the error state shows in UI
         context.read<HomeViewModel>().setError(e.toString());
-      }
-    } finally {
-      // Make sure we're still mounted before updating state
-      if (mounted) {
-        setState(() => _isRetrying = false);
       }
     }
   }
@@ -122,33 +148,52 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Consumer<HomeViewModel>(
           builder: (context, viewModel, child) {
-            if (viewModel.isLoading && !_isRetrying) {
+            // CASE 1: Initial loading - show loading indicator
+            if (_isInitializing) {
               return const LoadingIndicator();
             }
 
-            if (viewModel.error.isNotEmpty) {
+            // CASE 2: ViewModel is actively loading - show loading indicator
+            if (viewModel.isLoading) {
+              return const LoadingIndicator();
+            }
+
+            // CASE 3: Error state with data - show error but allow retry
+            if (viewModel.error.isNotEmpty && viewModel.storeData == null) {
               return ErrorDisplay(
                 error: viewModel.error,
-                onRetry: _initializeData,
+                onRetry: () {
+                  setState(() => _isInitializing = true);
+                  _initializeData().then((_) {
+                    if (mounted) setState(() => _isInitializing = false);
+                  });
+                },
               );
             }
 
+            // CASE 4: No data but no error - show better message with retry
             if (viewModel.storeData == null) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('No store data available'),
+                    const Text('We\'re having trouble loading the restaurant data.'),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: _initializeData,
-                      child: const Text('Retry'),
+                      onPressed: () {
+                        setState(() => _isInitializing = true);
+                        _initializeData().then((_) {
+                          if (mounted) setState(() => _isInitializing = false);
+                        });
+                      },
+                      child: const Text('Try Again'),
                     ),
                   ],
                 ),
               );
             }
 
+            // CASE 5: Has data (possibly with warning error) - show content
             return _buildContent(context, viewModel);
           },
         ),
@@ -156,45 +201,26 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     body: SafeArea(
-  //       child: Consumer<HomeViewModel>(
-  //         builder: (context, viewModel, child) {
-  //           if (viewModel.isLoading) {
-  //             return const LoadingIndicator();
-  //           }
-  //
-  //           if (viewModel.error.isNotEmpty) {
-  //             return ErrorDisplay(
-  //               error: viewModel.error,
-  //               onRetry: _initializeData,
-  //             );
-  //           }
-  //
-  //           if (viewModel.storeData == null) {
-  //             return const Center(child: Text('No store data available'));
-  //           }
-  //
-  //           return _buildContent(context, viewModel);
-  //         },
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildContent(BuildContext context, HomeViewModel viewModel) {
     return RefreshIndicator(
-      onRefresh: () => viewModel.fetchStores(forceRefresh: true),
+      onRefresh: () async {
+        // Show loading state during refresh
+        setState(() => _isInitializing = true);
+
+        try {
+          await viewModel.fetchStores(forceRefresh: true);
+        } finally {
+          if (mounted) setState(() => _isInitializing = false);
+        }
+      },
       child: CustomScrollView(
         slivers: [
-          // _buildAppBar(),
           _buildBody(viewModel),
         ],
       ),
     );
   }
+
 
   // Widget _buildAppBar() {
   //   return SliverAppBar(

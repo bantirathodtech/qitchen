@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../home/cart/multiple/cart_manager.dart';
-import '../home/cart/multiple/cart_screen.dart';
+import '../../data/cache/app_prefetch_manager.dart';
+import '../cart/multiple/cart_screen.dart';
 import '../home/widgets/main_bottom_navigation_bar.dart';
 import '../menu/menu_screen.dart';
 import '../store/view/screen/home_screen.dart';
@@ -23,6 +23,12 @@ class MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _selectedIndex = widget.initialIndex;
+
+    // Add this section to prefetch data in background
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Prefetch app data in background without blocking UI
+      AppPrefetchManager.prefetchAppData(context);
+    });
   }
 
   void onItemTapped(int index) {

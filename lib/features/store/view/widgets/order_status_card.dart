@@ -61,7 +61,7 @@ class _OrderStatusCardState extends State<OrderStatusCard> {
 
   @override
   Widget build(BuildContext context) {
-    AppLogger.logDebug('${OrderStatusCard.TAG}: Building order status card');
+    AppLogger.logDebug('${OrderStatusCard.TAG}: Building order_shared_common status card');
 
     return Card(
       elevation: 4,

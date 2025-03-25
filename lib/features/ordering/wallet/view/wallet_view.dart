@@ -6,7 +6,8 @@ import '../../../../common/styles/app_text_styles.dart';
 import '../../../../common/widgets/custom_app_bar.dart';
 import '../../../../data/db/app_preferences.dart';
 import '../../../auth/verify/model/verify_model.dart';
-import '../../payment/service/razorpay_service.dart';
+import '../../../auth/verify/viewmodel/verify_viewmodel.dart';
+import '../../order_shared_common/service/razorpay_service.dart';
 import '../viewmodel/wallet_viewmodel.dart';
 import '../widgets/wallet_balance_card.dart';
 
@@ -264,11 +265,11 @@ class _WalletPaymentHandlerState extends State<WalletPaymentHandler> {
   }
 
   /// Handle successful payment
-  /// Flow: Payment Success -> Update Wallet -> Update UI
+  /// Flow: Payment Success -> Update Wallet -> Update User Profile -> Update UI
   Future<void> _processPaymentSuccess(
-    CustomerModel customer,
-    PaymentSuccessResponse response,
-  ) async {
+      CustomerModel customer,
+      PaymentSuccessResponse response,
+      ) async {
     if (_isProcessing) return;
     setState(() => _isProcessing = true);
 
@@ -293,6 +294,9 @@ class _WalletPaymentHandlerState extends State<WalletPaymentHandler> {
         balance: result.balance!,
       );
 
+      // Use ViewModel to refresh user profile
+      await _refreshUserProfileViaViewModel(customer.mobileNo!);
+
       AppLogger.logInfo(
           '[WalletPaymentHandler] Updated balance after payment: ${result.balance}');
 
@@ -308,6 +312,25 @@ class _WalletPaymentHandlerState extends State<WalletPaymentHandler> {
       }
     }
   }
+
+// New method that uses the ViewModel
+  Future<void> _refreshUserProfileViaViewModel(String mobileNumber) async {
+    try {
+      AppLogger.logInfo('[WalletPaymentHandler] Refreshing user profile via ViewModel');
+
+      // Get the verify viewmodel using Provider
+      final verifyViewModel = Provider.of<VerifyViewModel>(context, listen: false);
+
+      // Use the viewmodel to refresh profile and update storage
+      await verifyViewModel.refreshUserProfile(mobileNumber);
+
+      AppLogger.logInfo('[WalletPaymentHandler] User profile refreshed successfully');
+    } catch (e) {
+      AppLogger.logError('[WalletPaymentHandler] Failed to refresh user profile: $e');
+      // Don't throw - we don't want to fail the transaction if profile refresh fails
+    }
+  }
+
 
   /// Update local storage with payment information
   Future<void> _updatePaymentInfo({

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../cart/multiple/cart_manager.dart';
 import '../../main/main_screen.dart';
-import '../cart/multiple/cart_manager.dart';
 
 /// Standalone bottom navigation bar without tab highlighting
 /// Used in product/detail screens where no tab should be highlighted

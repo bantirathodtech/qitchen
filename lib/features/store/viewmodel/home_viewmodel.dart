@@ -1,8 +1,10 @@
 // File: viewmodels/home_viewmodel.dart
 
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/log/loggers.dart';
+import '../../products/viewmodel/product_viewmodel.dart';
 import '../cache/store_cache.dart';
 import '../model/store_models.dart';
 import '../provider/store_provider.dart';
@@ -34,30 +36,13 @@ class HomeViewModel extends ChangeNotifier {
     AppLogger.logInfo('$TAG: Initializing HomeViewModel');
   }
 
-  /// Fetch all store data from the service
-  // Future<void> fetchStores({bool forceRefresh = false}) async {
-  //   try {
-  //     AppLogger.logInfo(
-  //         '$TAG: Starting store data fetch (force: $forceRefresh)');
-  //     _setLoading(true);
-  //     _clearError();
-  //
-  //     // Fetch store data
-  //     final storeData = await _storeService.fetchStores();
-  //     AppLogger.logInfo(
-  //       '$TAG: Fetched ${storeData.restaurants.length} restaurants',
-  //     );
-  //
-  //     // Update store provider
-  //     _storeProvider.initializeStores(storeData);
-  //
-  //     AppLogger.logInfo('$TAG: Successfully loaded store data');
-  //   } catch (e) {
-  //     _handleError('Failed to fetch stores', e);
-  //   } finally {
-  //     _setLoading(false);
-  //   }
-  // }
+  /// Clear error state (new method)
+  void clearError() {
+    if (_error.isNotEmpty) {
+      _error = '';
+      notifyListeners();
+    }
+  }
 
   /// Fetch all store data from the service with caching
   Future<void> fetchStores({bool forceRefresh = false}) async {
@@ -95,7 +80,6 @@ class HomeViewModel extends ChangeNotifier {
       _setLoading(false);
     }
   }
-
 
   // Add this method to HomeViewModel class (already exists in your shared code)
   void setError(String errorMessage) {
@@ -292,4 +276,34 @@ class HomeViewModel extends ChangeNotifier {
     final displayHour = hour > 12 ? hour - 12 : hour;
     return '$displayHour:$minute $period';
   }
+
+  // Add this method to your HomeViewModel
+  // Future<void> preloadProductsForAllRestaurants(BuildContext context) async {
+  //   if (storeData == null || storeData!.restaurants.isEmpty) return;
+  //
+  //   AppLogger.logInfo('$TAG: Starting background preload of products for all restaurants');
+  //
+  //   // Get ProductViewModel
+  //   final productViewModel = Provider.of<ProductViewModel>(context, listen: false);
+  //
+  //   // Create a queue of restaurants to process
+  //   final List<RestaurantModel> restaurantsToProcess = [...storeData!.restaurants];
+  //
+  //   // Process restaurants one by one to avoid overwhelming the network
+  //   for (final restaurant in restaurantsToProcess) {
+  //     try {
+  //       AppLogger.logInfo('$TAG: Preloading products for restaurant: ${restaurant.name}');
+  //       await productViewModel.fetchProducts(restaurant.storeId, forceRefresh: false);
+  //       AppLogger.logInfo('$TAG: Successfully preloaded products for: ${restaurant.name}');
+  //     } catch (e) {
+  //       // Log error but continue with next restaurant
+  //       AppLogger.logError('$TAG: Error preloading products for ${restaurant.name}: $e');
+  //     }
+  //
+  //     // Small delay to avoid overwhelming the network
+  //     await Future.delayed(const Duration(milliseconds: 300));
+  //   }
+  //
+  //   AppLogger.logInfo('$TAG: Completed background preloading of products');
+  // }
 }

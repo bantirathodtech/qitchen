@@ -7,7 +7,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:logger/logger.dart';
 
 import '../../../common/log/loggers.dart';
-import '../../../core/api/api_base_service.dart';
+import '../../../core/services/base/api_base_service.dart';
 import '../../../data/db/app_preferences.dart';
 import '../../main/main_screen.dart';
 import '../signin/signin_screen.dart';

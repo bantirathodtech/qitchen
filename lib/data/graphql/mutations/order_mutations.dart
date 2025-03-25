@@ -16,7 +16,7 @@
 //   return '''
 //     mutation {
 //       createOrder(
-//         order: {
+//         order_shared_common: {
 //           documentno: "$documentno"
 //           cSBunitID: "$cSBunitID"
 //           dateOrdered: "$dateOrdered"

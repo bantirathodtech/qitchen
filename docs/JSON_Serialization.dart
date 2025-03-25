@@ -11,7 +11,7 @@
 //   build_runner: ^2.4.13
 //   json_serializable: ^6.8.0
 //
-// 2. COMMANDS TO RUN (in order):
+// 2. COMMANDS TO RUN (in order_shared_common):
 // flutter clean
 // flutter pub get
 // flutter pub run build_runner clean

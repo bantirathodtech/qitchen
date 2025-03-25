@@ -1,6 +1,6 @@
 import '../../../common/log/loggers.dart';
-import '../../../core/api/api_base_service.dart';
-import '../../../core/api/api_url_manager.dart';
+import '../../../core/services/base/api_base_service.dart';
+import '../../../core/services/endpoints/api_url_manager.dart';
 import '../model/product_model.dart';
 
 class ProductService {

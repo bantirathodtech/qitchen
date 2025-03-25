@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../common/styles/app_text_styles.dart';
 import '../../../common/widgets/custom_app_bar.dart';
+import '../../cart/models/cart_item.dart';
+import '../../cart/multiple/cart_manager.dart';
 import '../../favorite/favorite_manager.dart';
-import '../../home/cart/models/cart_item.dart';
-import '../../home/cart/multiple/cart_manager.dart';
 import '../model/product_model.dart';
 
 class ProductDetailScreen extends StatefulWidget {

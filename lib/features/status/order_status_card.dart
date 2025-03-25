@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:hexcolor/hexcolor.dart'; // Import for Flutter framework
 //
-// // Enum to represent different order statuses
+// // Enum to represent different order_shared_common statuses
 // enum OrderStatus {
 //   ordered,
 //   preparing,

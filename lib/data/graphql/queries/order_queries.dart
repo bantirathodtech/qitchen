@@ -1,10 +1,10 @@
 // import 'dart:developer' as dev;
 //
 // String fetchOrderQuery(String id) {
-//   dev.log('Fetching order data for id: $id', name: 'GraphQLQueries');
+//   dev.log('Fetching order_shared_common data for id: $id', name: 'GraphQLQueries');
 //   return '''
 //     query GetOrder(\$id: ID!) {
-//       order(id: \$id) {
+//       order_shared_common(id: \$id) {
 //         sOrderID
 //         documentno
 //         dateordered
