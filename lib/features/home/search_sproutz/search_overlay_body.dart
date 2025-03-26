@@ -25,6 +25,7 @@ class _SearchOverlayBodyState extends State<SearchOverlayBody> {
         widget.searchQuery.isNotEmpty) {
       _saveToRecentSearches(widget.searchQuery);
     }
+
   }
 
   Future<void> _saveToRecentSearches(String query) async {
