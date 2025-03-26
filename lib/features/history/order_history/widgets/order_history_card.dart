@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../model/order_history_model.dart';
+import '../screen/rate_order_screen.dart';
 import '../viewmodel/order_history_viewmodel.dart';
 
 class OrderHistoryCard extends StatelessWidget {
@@ -80,6 +81,30 @@ class OrderHistoryCard extends StatelessWidget {
                     padding: const EdgeInsets.all(4.0),
                     child: Row(
                       children: [
+                        // Expanded(
+                        //   child: SizedBox(
+                        //     height: 28, // Further reduced height
+                        //     child: OutlinedButton(
+                        //       onPressed: () => _handleReorder(context),
+                        //       style: OutlinedButton.styleFrom(
+                        //         side: const BorderSide(color: Colors.black),
+                        //         padding: EdgeInsets.zero,
+                        //         foregroundColor: Colors.black,
+                        //         minimumSize: Size.zero, // Allow smaller size
+                        //         tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Reduce tap target
+                        //       ),
+                        //       child: const Text(
+                        //         'Reorder',
+                        //         style: TextStyle(
+                        //           color: Colors.black,
+                        //           fontWeight: FontWeight.bold,
+                        //           fontSize: 12,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
+
                         Expanded(
                           child: SizedBox(
                             height: 28, // Further reduced height
@@ -104,11 +129,34 @@ class OrderHistoryCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 8),
+                        // Expanded(
+                        //   child: SizedBox(
+                        //     height: 28, // Further reduced height
+                        //     child: FilledButton(
+                        //       onPressed: onRateOrder,
+                        //       style: FilledButton.styleFrom(
+                        //         backgroundColor: Colors.black,
+                        //         padding: EdgeInsets.zero,
+                        //         foregroundColor: Colors.white,
+                        //         minimumSize: Size.zero, // Allow smaller size
+                        //         tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Reduce tap target
+                        //       ),
+                        //       child: const Text(
+                        //         'Rate Order',
+                        //         style: TextStyle(
+                        //           color: Colors.white,
+                        //           fontWeight: FontWeight.bold,
+                        //           fontSize: 12,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                         Expanded(
                           child: SizedBox(
                             height: 28, // Further reduced height
                             child: FilledButton(
-                              onPressed: onRateOrder,
+                              onPressed: () => _handleRateOrder(context),
                               style: FilledButton.styleFrom(
                                 backgroundColor: Colors.black,
                                 padding: EdgeInsets.zero,
@@ -139,6 +187,46 @@ class OrderHistoryCard extends StatelessWidget {
     );
   }
 
+  // void _handleReorder(BuildContext context) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       backgroundColor: Colors.white,
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(8),
+  //         side: const BorderSide(color: Colors.black),
+  //       ),
+  //       title: const Text(
+  //         'Reorder Items',
+  //         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+  //       ),
+  //       content: const Text(
+  //         'Would you like to add these items to your cart? This will replace any existing items in your cart.',
+  //         style: TextStyle(color: Color(0xFF666666)),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: const Text(
+  //             'Cancel',
+  //             style: TextStyle(color: Colors.black),
+  //           ),
+  //         ),
+  //         FilledButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //             context.read<OrderHistoryViewModel>().reorderItems(context, order);
+  //           },
+  //           style: FilledButton.styleFrom(backgroundColor: Colors.black),
+  //           child: const Text(
+  //             'Confirm',
+  //             style: TextStyle(color: Colors.white),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   void _handleReorder(BuildContext context) {
     showDialog(
       context: context,
@@ -176,6 +264,15 @@ class OrderHistoryCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _handleRateOrder(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RateOrderScreen(order: order),
       ),
     );
   }

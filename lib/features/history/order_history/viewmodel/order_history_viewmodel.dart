@@ -86,6 +86,63 @@ class OrderHistoryViewModel extends ChangeNotifier {
   }
 
   // Main method to load order_shared_common history
+  // Future<void> loadOrderHistory(String customerId) async {
+  //   if (_isLoading) {
+  //     AppLogger.logInfo('$TAG Already loading data, ignoring request');
+  //     return; // Prevent multiple simultaneous loads
+  //   }
+  //
+  //   try {
+  //     _isLoading = true;
+  //     _currentCustomerId = customerId;
+  //     AppLogger.logInfo('$TAG Loading order_shared_common history for customer: $customerId');
+  //     _stateNotifier.setLoading();
+  //
+  //     // First try to load from cache
+  //     final cachedOrders = await OrderHistoryCache.getOrderHistoryData(customerId);
+  //
+  //     if (cachedOrders != null && cachedOrders.isNotEmpty) {
+  //       AppLogger.logInfo('$TAG Using cached order_shared_common history data (${cachedOrders.length} orders)');
+  //
+  //       // Filter and sort cached orders
+  //       final uniqueCachedOrders = _getUniqueOrders(cachedOrders);
+  //       uniqueCachedOrders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+  //
+  //       // Update UI with cached data while we fetch fresh data
+  //       _stateNotifier.setOrders(uniqueCachedOrders);
+  //     }
+  //
+  //     // Then fetch fresh data from server
+  //     AppLogger.logInfo('$TAG Fetching fresh order_shared_common history data from server');
+  //     final orders = await _repository.getOrderHistory(customerId);
+  //
+  //     // Ensure we have unique orders and sort them
+  //     final uniqueOrders = _getUniqueOrders(orders);
+  //     uniqueOrders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+  //
+  //     AppLogger.logInfo('$TAG Fetched ${orders.length} orders, filtered to ${uniqueOrders.length} unique orders');
+  //
+  //     // Set orders only if they're different from what's in state
+  //     if (!_ordersEqual(uniqueOrders, _stateNotifier.state.orders)) {
+  //       AppLogger.logInfo('$TAG Orders changed, updating state');
+  //       _stateNotifier.setOrders(uniqueOrders);
+  //     } else {
+  //       AppLogger.logInfo('$TAG Orders unchanged, not updating state');
+  //     }
+  //
+  //     // Cache the fetched data
+  //     AppLogger.logInfo('$TAG Caching ${uniqueOrders.length} orders');
+  //     await OrderHistoryCache.saveOrderHistoryData(customerId, uniqueOrders);
+  //   } catch (e) {
+  //     AppLogger.logError('$TAG Error loading order_shared_common history: $e');
+  //     _stateNotifier.setError(e.toString());
+  //   } finally {
+  //     _isLoading = false;
+  //   }
+  // }
+
+  // In order_history_viewmodel.dart, ensure orders are sorted correctly in loadOrderHistory method
+
   Future<void> loadOrderHistory(String customerId) async {
     if (_isLoading) {
       AppLogger.logInfo('$TAG Already loading data, ignoring request');
@@ -95,16 +152,16 @@ class OrderHistoryViewModel extends ChangeNotifier {
     try {
       _isLoading = true;
       _currentCustomerId = customerId;
-      AppLogger.logInfo('$TAG Loading order_shared_common history for customer: $customerId');
+      AppLogger.logInfo('$TAG Loading order history for customer: $customerId');
       _stateNotifier.setLoading();
 
       // First try to load from cache
       final cachedOrders = await OrderHistoryCache.getOrderHistoryData(customerId);
 
       if (cachedOrders != null && cachedOrders.isNotEmpty) {
-        AppLogger.logInfo('$TAG Using cached order_shared_common history data (${cachedOrders.length} orders)');
+        AppLogger.logInfo('$TAG Using cached order history data (${cachedOrders.length} orders)');
 
-        // Filter and sort cached orders
+        // Filter and sort cached orders - NEWEST FIRST
         final uniqueCachedOrders = _getUniqueOrders(cachedOrders);
         uniqueCachedOrders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
 
@@ -113,10 +170,10 @@ class OrderHistoryViewModel extends ChangeNotifier {
       }
 
       // Then fetch fresh data from server
-      AppLogger.logInfo('$TAG Fetching fresh order_shared_common history data from server');
+      AppLogger.logInfo('$TAG Fetching fresh order history data from server');
       final orders = await _repository.getOrderHistory(customerId);
 
-      // Ensure we have unique orders and sort them
+      // Ensure we have unique orders and sort them - NEWEST FIRST
       final uniqueOrders = _getUniqueOrders(orders);
       uniqueOrders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
 
@@ -134,7 +191,7 @@ class OrderHistoryViewModel extends ChangeNotifier {
       AppLogger.logInfo('$TAG Caching ${uniqueOrders.length} orders');
       await OrderHistoryCache.saveOrderHistoryData(customerId, uniqueOrders);
     } catch (e) {
-      AppLogger.logError('$TAG Error loading order_shared_common history: $e');
+      AppLogger.logError('$TAG Error loading order history: $e');
       _stateNotifier.setError(e.toString());
     } finally {
       _isLoading = false;

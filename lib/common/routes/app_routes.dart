@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../features/auth/signin/signin_screen.dart';
 import '../../features/auth/splash/splash_screen.dart';
+import '../../features/history/order_history/model/order_history_model.dart';
+import '../../features/history/order_history/screen/rate_order_screen.dart';
 import '../../features/main/main_screen.dart';
 import '../../features/menu/menu_screen.dart';
 import '../../features/products/view/product_screen.dart'; // Add this import
@@ -17,6 +19,8 @@ class Routes {
   static const String menuView = '/menu';
   static const String walletView = '/wallet';
   static const String productScreen = '/product'; // Add this line
+  static const String rateOrderScreen = '/rate-order';
+
 
   static Map<String, WidgetBuilder> get routes {
     return {
@@ -39,6 +43,10 @@ class Routes {
           displayTiming: args['displayTiming'] as String,
           shortDescription: args['shortDescription'] as String?,
         );
+      },
+      rateOrderScreen: (context) {
+        final order = ModalRoute.of(context)!.settings.arguments as OrderHistory;
+        return RateOrderScreen(order: order);
       },
     };
   }
@@ -93,5 +101,12 @@ class Routes {
   static void navigateToCartTab(BuildContext context) {
     navigateToMainScreen(
         context, 1); // Assuming cart is the second tab (index 1)
+  }
+  static void navigateToRateOrder(BuildContext context, OrderHistory order) {
+    Navigator.pushNamed(
+      context,
+      rateOrderScreen,
+      arguments: order,
+    );
   }
 }
